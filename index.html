@@ -1,96 +1,89 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>29 Karakter Jamaah LDII & 6 Tabiat Luhur</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Player</title>
+  <style>
+    html,body{height:100%;margin:0}
+    body{display:flex;align-items:center;justify-content:center;background:#000}
+    /* full-bleed video */
+    .video-wrap{position:fixed;inset:0;overflow:hidden}
+    video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+    /* hide any overlays */
+    .hidden{display:none!important}
+  </style>
 </head>
 <body>
-  <div style="text-align: center;">
-    <a href="https://freeimage.host/id">
-      <img src="https://iili.io/FuECPrQ.jpg" alt="FuECPrQ.jpg" border="0">
-    </a>
+  <div class="video-wrap">
+    <!-- Nama file TIDAK ditampilkan di halaman -->
+    <!-- Pastikan file video berada satu folder dengan index.html -->
+    <video id="v" playsinline autoplay muted loop preload="auto">
+      <source src="lv_0_20250926220128.mp4" type="video/mp4">
+      Browser Anda tidak mendukung video.
+    </video>
   </div>
-  <header>
-    <h1>29 Karakter Jamaah LDII dan 6 Tabiat Luhur</h1>
-    <p class="subtitle">Pilar Akhlak Mulia Menuju Generasi Profesional Religius</p>
-  </header>
 
-  <main>
-    <section>
-      <h2>Apa Itu 29 Karakter Jamaah LDII?</h2>
-      <p>
-        29 karakter ini merupakan nilai-nilai moral dan sosial yang ditanamkan melalui pengajian dan pembinaan dalam LDII,
-        bertujuan untuk membentuk manusia yang berakhlakul karimah, mandiri, dan berguna bagi agama, bangsa, dan negara.
-      </p>
-      <ul class="character-list">
-        <li>Jujur</li>
-        <li>Amanah</li>
-        <li>Hemat</li>
-        <li>Rukun</li>
-        <li>Kompak</li>
-        <li>Kerja sama yang baik</li>
-        <li>Sabar</li>
-        <li>Tabah</li>
-        <li>Disiplin</li>
-        <li>Taat aturan</li>
-        <li>Bersih dan sehat</li>
-        <li>Rajin</li>
-        <li>Bertanggung jawab</li>
-        <li>Sungguh-sungguh</li>
-        <li>Tawakal</li>
-        <li>Adil</li>
-        <li>Tidak suka mencela</li>
-        <li>Dermawan</li>
-        <li>Mudah memaafkan</li>
-        <li>Rendah hati</li>
-        <li>Menjaga lisan</li>
-        <li>Tidak sombong</li>
-        <li>Tidak hasad</li>
-        <li>Tidak dendam</li>
-        <li>Suka menolong</li>
-        <li>Menghargai waktu</li>
-        <li>Tertib</li>
-        <li>Tidak iri hati</li>
-        <li>Tidak membicarakan aib orang</li>
-      </ul>
-    </section>
+  <script>
+    const v = document.getElementById('v');
 
-    <section>
-      <h2>6 Tabiat Luhur</h2>
-      <div class="tabiat">
-        <h3>1. Jujur</h3>
-        <p>Kejujuran adalah fondasi dari semua hubungan sosial dan kepercayaan. LDII menanamkan nilai kejujuran sejak dini dalam segala aspek kehidupan.</p>
+    // Beberapa browser memblokir autoplay kecuali video dimute; video diset muted di tag.
 
-        <h3>2. Amanah</h3>
-        <p>Amanah bukan hanya menjaga titipan, tetapi juga tanggung jawab terhadap tugas, waktu, dan peran dalam masyarakat.</p>
+    // Prevent user controls: remove controls, disable pointer events, prevent keyboard and context actions
+    v.removeAttribute('controls');
+    // pointer-events already none via CSS to block clicks
 
-        <h3>3. Rukun</h3>
-        <p>Rukun menciptakan harmoni dalam kehidupan sosial. Dalam keluarga, tetangga, maupun organisasi, rukun menjadi syarat mutlak terwujudnya ukhuwah islamiyah.</p>
+    // Keep video playing: if it gets paused, play immediately
+    v.addEventListener('pause', ()=>{
+      // Small timeout to avoid infinite loops in some browsers
+      setTimeout(()=>{ try{ v.play().catch(()=>{}); }catch(e){} }, 50);
+    });
 
-        <h3>4. Kompak</h3>
-        <p>Kekompakan menumbuhkan kerja sama yang solid dan efektif. Dalam LDII, kekompakan dilatih dalam berbagai kegiatan, mulai dari pengajian hingga kerja sosial.</p>
+    // Prevent seeking (jumping). Remember last time and restore if user tries to seek.
+    let lastTime = 0;
+    v.addEventListener('timeupdate', ()=>{ lastTime = v.currentTime; });
+    v.addEventListener('seeking', ()=>{
+      // if attempting to seek, go back to lastTime
+      try{ v.currentTime = lastTime; }catch(e){}
+    });
 
-        <h3>5. Kerja Sama yang Baik</h3>
-        <p>Kerja sama dalam kebaikan adalah implementasi ukhuwah yang nyata dan membangun masyarakat yang produktif dan damai.</p>
+    // Block keyboard shortcuts that might pause or seek
+    window.addEventListener('keydown', (e)=>{
+      const block = [' ','k','ArrowLeft','ArrowRight','MediaPlayPause'];
+      if(block.includes(e.key) || block.includes(e.code)){
+        e.preventDefault(); e.stopPropagation();
+        try{ v.play(); }catch(e){}
+      }
+    }, {capture:true});
 
-        <h3>6. Hemat</h3>
-        <p>Hemat berarti bijak dalam menggunakan rezeki, bukan pelit. Warga LDII diajarkan untuk hidup sederhana dan menghindari utang.</p>
-      </div>
-    </section>
+    // Prevent context menu / right click
+    window.addEventListener('contextmenu', (e)=>{ e.preventDefault(); });
 
-    <section>
-      <h2>Penutup</h2>
-      <p>
-        Dengan menerapkan 29 karakter luhur dan 6 Tabiat Luhur secara konsisten, warga LDII dapat menjadi pribadi yang berakhlak mulia, 
-        profesional religius, serta bermanfaat bagi masyarakat, bangsa, dan agama.
-      </p>
-    </section>
-  </main>
+    // Detect if playback is stopped by external reason and restart periodically
+    const ensurePlaying = ()=>{
+      if(v.paused || v.ended || v.readyState < 3){
+        v.play().catch(()=>{});
+      }
+    };
+    const checker = setInterval(ensurePlaying, 1000);
 
-  <footer>
-    <p>&copy; 2025 Artikel Pendidikan Islam - LDII Character Development</p>
-  </footer>
+    // When page is hidden (tab change), browsers may pause — try to resume when visible again
+    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) ensurePlaying(); });
+
+    // If you want to replace the video via drag-drop (optional), uncomment the following block
+    /*
+    document.body.addEventListener('dragover', (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
+    document.body.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      const f = e.dataTransfer.files && e.dataTransfer.files[0];
+      if(f && f.type.startsWith('video')){
+        const url = URL.createObjectURL(f);
+        v.src = url; v.load(); v.play().catch(()=>{});
+      }
+    });
+    */
+
+    // Accessibility note: This page intentionally hides controls and filename as requested.
+  </script>
 </body>
-  </html>
+</html>
