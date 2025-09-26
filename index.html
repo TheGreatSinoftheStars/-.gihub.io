@@ -2,92 +2,29 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Player</title>
+  <meta name="H.A!" content="width=device-width,initial-scale=1" />
+  <title>Video Player</title>
   <style>
-  #myVideo {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 300px;
-    height: auto;
-    border: 2px solid #45a29e;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.7);
-    z-index: 9999; 
-  }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* supaya landscape full layar */
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <div class="video-wrap">
-    <!-- Nama file TIDAK ditampilkan di halaman -->
-    <!-- Pastikan file video berada satu folder dengan index.html -->
-    <video id="v" playsinline autoplay muted loop preload="auto">
-      <source src="lv_0_20250926220128.mp4" type="video/mp4">
-      Browser Anda tidak mendukung video.
-    </video>
-  </div>
-
-  <script>
-    const v = document.getElementById('v');
-
-    // Beberapa browser memblokir autoplay kecuali video dimute; video diset muted di tag.
-
-    // Prevent user controls: remove controls, disable pointer events, prevent keyboard and context actions
-    v.removeAttribute('controls');
-    // pointer-events already none via CSS to block clicks
-
-    // Keep video playing: if it gets paused, play immediately
-    v.addEventListener('pause', ()=>{
-      // Small timeout to avoid infinite loops in some browsers
-      setTimeout(()=>{ try{ v.play().catch(()=>{}); }catch(e){} }, 50);
-    });
-
-    // Prevent seeking (jumping). Remember last time and restore if user tries to seek.
-    let lastTime = 0;
-    v.addEventListener('timeupdate', ()=>{ lastTime = v.currentTime; });
-    v.addEventListener('seeking', ()=>{
-      // if attempting to seek, go back to lastTime
-      try{ v.currentTime = lastTime; }catch(e){}
-    });
-
-    // Block keyboard shortcuts that might pause or seek
-    window.addEventListener('keydown', (e)=>{
-      const block = [' ','k','ArrowLeft','ArrowRight','MediaPlayPause'];
-      if(block.includes(e.key) || block.includes(e.code)){
-        e.preventDefault(); e.stopPropagation();
-        try{ v.play(); }catch(e){}
-      }
-    }, {capture:true});
-
-    // Prevent context menu / right click
-    window.addEventListener('contextmenu', (e)=>{ e.preventDefault(); });
-
-    // Detect if playback is stopped by external reason and restart periodically
-    const ensurePlaying = ()=>{
-      if(v.paused || v.ended || v.readyState < 3){
-        v.play().catch(()=>{});
-      }
-    };
-    const checker = setInterval(ensurePlaying, 1000);
-
-    // When page is hidden (tab change), browsers may pause — try to resume when visible again
-    document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) ensurePlaying(); });
-
-    // If you want to replace the video via drag-drop (optional), uncomment the following block
-    /*
-    document.body.addEventListener('dragover', (e)=>{ e.preventDefault(); e.dataTransfer.dropEffect = 'copy'; });
-    document.body.addEventListener('drop', (e)=>{
-      e.preventDefault();
-      const f = e.dataTransfer.files && e.dataTransfer.files[0];
-      if(f && f.type.startsWith('video')){
-        const url = URL.createObjectURL(f);
-        v.src = url; v.load(); v.play().catch(()=>{});
-      }
-    });
-    */
-
-    // Accessibility note: This page intentionally hides controls and filename as requested.
-  </script>
+  <video autoplay muted loop playsinline>
+    <source src="lv_0_20250926220128.mp4" type="video/mp4">
+    Browser Anda tidak mendukung video.
+  </video>
 </body>
 </html>
