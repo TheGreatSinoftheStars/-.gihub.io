@@ -36,14 +36,14 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      z-index: 100; /* Pastikan di atas video */
+      z-index: 100;
     }
 
     #music-btn {
       width: 50px;
       height: 50px;
       border-radius: 50%;
-      background: rgba(0, 242, 255, 0.2); /* Transparan biru */
+      background: rgba(0, 242, 255, 0.2);
       border: 2px solid #00f2ff;
       color: #00f2ff;
       cursor: pointer;
@@ -61,7 +61,6 @@
       color: #000;
     }
 
-    /* Efek Berdenyut saat Musik Nyala */
     .music-pulse {
       animation: pulse-animation 2s infinite;
     }
@@ -80,8 +79,8 @@
     Browser Anda tidak mendukung video.
   </video>
 
-  <!-- Audio Element -->
-  <audio id="bg-music" loop>
+  <!-- Audio Element (Ditambah atribut autoplay) -->
+  <audio id="bg-music" loop autoplay>
     <source src="BINTANG.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
@@ -99,21 +98,47 @@
     const btn = document.getElementById('music-btn');
     const icon = document.getElementById('music-icon');
 
+    // Fungsi utama Play/Pause
     function toggleMusic() {
         if (isPlaying) {
             audio.pause();
-            icon.className = 'fas fa-play'; // Ikon jadi Play
-            btn.classList.remove('music-pulse');
-            isPlaying = false;
+            updateUI(false);
         } else {
-            audio.play().catch(function(error) {
-                console.log("Autoplay diblokir browser, klik tombol lagi.");
-            });
-            icon.className = 'fas fa-pause'; // Ikon jadi Pause
-            btn.classList.add('music-pulse');
-            isPlaying = true;
+            playAudio();
         }
     }
+
+    function playAudio() {
+        audio.play().then(() => {
+            updateUI(true);
+        }).catch(error => {
+            console.log("Autoplay diblokir. Menunggu interaksi user...");
+        });
+    }
+
+    function updateUI(playing) {
+        if (playing) {
+            icon.className = 'fas fa-pause';
+            btn.classList.add('music-pulse');
+            isPlaying = true;
+        } else {
+            icon.className = 'fas fa-play';
+            btn.classList.remove('music-pulse');
+            isPlaying = false;
+        }
+    }
+
+    // TRICK AUTO PLAY: Jalankan musik saat user klik/sentuh layar pertama kali
+    window.addEventListener('click', function() {
+        if(!isPlaying) playAudio();
+    }, { once: true }); // {once: true} artinya event ini hanya jalan 1 kali
+
+    window.addEventListener('touchstart', function() {
+        if(!isPlaying) playAudio();
+    }, { once: true });
+
+    // Mencoba autoplay saat load (biasanya gagal di Chrome tapi berhasil di beberapa browser)
+    window.addEventListener('load', playAudio);
   </script>
 
 </body>
