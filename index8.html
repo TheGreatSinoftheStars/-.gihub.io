@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>H.A/⍑⚍ᓭリ╎  ᔑℸ ̣ ⍑╎||ᔑ⍑</title>
+  <link rel="shortcut icon" href="blue.ico" type="image/x-icon">
+  
+  <!-- Menambahkan Font Awesome untuk Ikon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    html, body {
+      height: 100dvh;
+      margin: 0;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    video {
+      width: 100%;
+      height: 100dvh;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+    }
+
+    /* --- TOMBOL MUSIK --- */
+    .music-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100; /* Pastikan di atas video */
+    }
+
+    #music-btn {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: rgba(0, 242, 255, 0.2); /* Transparan biru */
+      border: 2px solid #00f2ff;
+      color: #00f2ff;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    #music-btn:hover {
+      background: #00f2ff;
+      color: #000;
+    }
+
+    /* Efek Berdenyut saat Musik Nyala */
+    .music-pulse {
+      animation: pulse-animation 2s infinite;
+    }
+
+    @keyframes pulse-animation {
+      0% { box-shadow: 0 0 0 0px rgba(0, 242, 255, 0.7); }
+      100% { box-shadow: 0 0 0 15px rgba(0, 242, 255, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="lv_0_20250926220128.mp4" type="video/mp4">
+    Browser Anda tidak mendukung video.
+  </video>
+
+  <!-- Audio Element -->
+  <audio id="bg-music" loop>
+    <source src="BINTANG.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  
+  <!-- Floating Music Toggle -->
+  <div class="music-container">
+    <button onclick="toggleMusic()" id="music-btn" title="Toggle Music">
+        <i id="music-icon" class="fas fa-play"></i>
+    </button>
+  </div>
+
+  <script>
+    let isPlaying = false;
+    const audio = document.getElementById('bg-music');
+    const btn = document.getElementById('music-btn');
+    const icon = document.getElementById('music-icon');
+
+    function toggleMusic() {
+        if (isPlaying) {
+            audio.pause();
+            icon.className = 'fas fa-play'; // Ikon jadi Play
+            btn.classList.remove('music-pulse');
+            isPlaying = false;
+        } else {
+            audio.play().catch(function(error) {
+                console.log("Autoplay diblokir browser, klik tombol lagi.");
+            });
+            icon.className = 'fas fa-pause'; // Ikon jadi Pause
+            btn.classList.add('music-pulse');
+            isPlaying = true;
+        }
+    }
+  </script>
+
+</body>
+</html>
